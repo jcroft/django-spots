@@ -37,5 +37,7 @@ setup(
     author='Jeff Croft',
     url='http://github.com/jcroft/django-spots',
     packages=packages,
-    requires='geopy==0.94.1',
+    install_requires = [
+        'geopy >= 0.94.1',
+    ],
     )
