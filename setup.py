@@ -30,9 +30,12 @@ for dirpath, dirnames, filenames in os.walk(package_dir):
         packages.append(".".join(fullsplit(dirpath)))
 
 
-setup(name='spots',
+setup(
+    name='spots',
     version='0.1',
     description='Provides geo "spots" functionality for Django',
     author='Jeff Croft',
     url='http://github.com/jcroft/django-spots',
-    packages=packages)
+    packages=packages,
+    requires='geopy==0.94.1',
+    )
