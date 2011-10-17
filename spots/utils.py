@@ -131,11 +131,15 @@ def get_address_from_location(location):
   """
   Reverse geocodes this spot based on the location tuple entered.
   Returns a string containing the full address, like "1525 NW 57th St, Seattle, WA 98107, USA".
+  Requires the reverse-ceocode branch of geopy.
   """
   latitude = location[0]
   longitude = location[1]
-  google_geocoder = Google(settings.GOOGLE_MAPS_API_KEY)
-  (place,point) = google_geocoder.reverse((latitude, longitude))
+  try:
+    google_geocoder = Google(settings.GOOGLE_MAPS_API_KEY)
+    (place,point) = google_geocoder.reverse((latitude, longitude))
+  except:
+    return None
   return place
   
 
