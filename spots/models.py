@@ -265,6 +265,9 @@ class Spot(models.Model):
     Returns a string containing the full address, like "1525 NW 57th St, Seattle, WA 98107, USA".
     """
     return get_address_from_location(self.location())
+  
+  def _get_city_from_location(self):
+    return get_city_from_point(self.location())
 
   def _update_neighborhoods(self):
     """
