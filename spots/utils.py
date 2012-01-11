@@ -153,7 +153,7 @@ def get_street_address(address):
 
 def get_city_from_google_results(google_results):
   """
-  Gets or creates, and returns, a Django City object based on the city in the Google results from GeoPy.
+  Gets or creates, and returns, a City object based on the city in the Google results from GeoPy.
   This is fairly ugly, as Google's results aren't exactly the cleanest thing in the world.
   """
   from spots.models import City
@@ -197,6 +197,7 @@ def get_city_from_address(address):
   google_maps_api         = GoogleMapsClient()
   params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
   google_results          = google_maps_api(**params)
+  print google_results
   return get_city_from_google_results(google_results)
 
 
