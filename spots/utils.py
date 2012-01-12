@@ -197,7 +197,6 @@ def get_city_from_address(address):
   google_maps_api         = GoogleMapsClient()
   params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
   google_results          = google_maps_api(**params)
-  print google_results
   return get_city_from_google_results(google_results)
 
 
