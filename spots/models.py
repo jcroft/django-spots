@@ -175,7 +175,10 @@ class Spot(models.Model):
     a given mile_limit, which defaults to 25 miles.
     """
     from django.template.defaultfilters import dictsort
-    spots_within_limit = Spot.objects.within_radius_of_location(location=self.location(), radius_miles=mile_limit)
+    spots_within_limit = self.__class__.objects.within_radius_of_location(
+      location=self.location(), 
+      radius_miles=mile_limit,
+    )
     spot_dict_list = []
     for spot in spots_within_limit:
       if spot != self:
