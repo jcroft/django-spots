@@ -49,7 +49,7 @@ REVERSE_BEARING_MAPPING = {
   360.0 : 'N',
 }
 
-USER_AGENT = "BarStar 1.0"
+USER_AGENT = "django-spots 0.1"
 
 def fetch_and_parse_json(url, auth_info=None):
   """
@@ -210,7 +210,7 @@ def get_city_from_point(latitude, longitude):
   return get_city_from_google_results(google_results)
 
 
-def get_compass_direction_from_bearing(number, reverse=False):
+def get_compass_direction_from_bearing(number, reverse=True):
   from math import fabs
   key = None
   closest = 1000
