@@ -181,7 +181,7 @@ def get_compass_direction_from_bearing(d):
     majorindex = int(majorindex)
     minorindex  = int( (minor*4) // 45 )
     p1, p2 = BEARING_MAJORS[majorindex: majorindex+2]
-    if p1 in {'north', 'south'}:
+    if p1 in ['north', 'south']:
         q = BEARING_QUARTER1
     else:
         q = BEARING_QUARTER2
