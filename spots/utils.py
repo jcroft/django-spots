@@ -14,7 +14,38 @@ BEARING_MAJORS   *= 2 # no need for modulo later
 BEARING_QUARTER1 = 'N,N by E,N-NE,NE by N,NE,NE by E,E-NE,E by N'.split(',')
 BEARING_QUARTER2 = [p.replace('NE','EN') for p in BEARING_QUARTER1]
 BEARING_ABBR = {
-  
+  'North': 'N',    
+  'North by east': 'NbE',      
+  'North-northeast': 'NNE',
+  'Northeast by north': 'NEbN',
+  'Northeast': 'NE',
+  'Northeast by east': 'NEbE',    
+  'East-northeast': 'ENE',
+  'East by north': 'EbN',
+  'East': 'E',
+  'East by south': 'EbS',    
+  'East-southeast': 'ESE',
+  'Southeast by east': 'SEbE', 
+  'Southeast': 'SE',
+  'Southeast by south': 'SEbS',    
+  'South-southeast': 'SSE',
+  'South by east': 'SbE',
+  'South': 'S',
+  'South by west': 'SbW',    
+  'South-southwest': 'SSW', 
+  'Southwest by south': 'SWbS',
+  'Southwest': 'SW',
+  'Southwest by west': 'SWbW',       
+  'West-southwest': 'WSW',
+  'West by south': 'WbS',
+  'West': 'W',
+  'West by north': 'WbN',    
+  'West-northwest': 'WNW',
+  'Northwest by west': 'NWbW', 
+  'Northwest': 'NW',
+  'Northwest by north': 'NWbN',      
+  'North-northwest': 'NNW',
+  'North by west': 'NbW',
 }
 
 USER_AGENT = "django-spots 0.1"
@@ -188,7 +219,11 @@ def get_compass_direction_from_bearing(d):
       q = BEARING_QUARTER1
     else:
       q = BEARING_QUARTER2
-    return q[minorindex].replace('N', p1).replace('E', p2).capitalize()
+    name = q[minorindex].replace('N', p1).replace('E', p2).capitalize()
+    return {
+      'name': name,
+      'abbr': BEARING_ABBR[name],
+    }
   
 def get_neighborhood_from_urban_mapping(latitude, longitude, city=None):
   neighborhood = None
