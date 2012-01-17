@@ -13,6 +13,9 @@ BEARING_MAJORS   = 'north east south west'.split()
 BEARING_MAJORS   *= 2 # no need for modulo later
 BEARING_QUARTER1 = 'N,N by E,N-NE,NE by N,NE,NE by E,E-NE,E by N'.split(',')
 BEARING_QUARTER2 = [p.replace('NE','EN') for p in BEARING_QUARTER1]
+BEARING_ABBR = {
+  
+}
 
 USER_AGENT = "django-spots 0.1"
 
@@ -185,7 +188,6 @@ def get_compass_direction_from_bearing(d):
       q = BEARING_QUARTER1
     else:
       q = BEARING_QUARTER2
-    raise Exception(q[minorindex])
     return q[minorindex].replace('N', p1).replace('E', p2).capitalize()
   
 def get_neighborhood_from_urban_mapping(latitude, longitude, city=None):
