@@ -9,45 +9,10 @@ from geopy.geocoders.google import Google
 
 from spots.models import *
 
-BEARING_MAPPING = {
-  0.0   : 'S',
-  22.5  : 'SSE',
-  45.0  : 'SE',
-  67.5  : 'SEE',
-  90.0  : 'E',
-  112.5 : 'NEE',
-  135.0 : 'NE',
-  157.5 : 'NNE',
-  180.0 : 'N',
-  202.5 : 'NNW',
-  225.0 : 'NW',
-  247.5 : 'NWW',
-  270.0 : 'W',
-  292.5 : 'SWW',
-  315.0 : 'SW',
-  337.5 : 'SSW',
-  360.0 : 'S',
-}
-
-REVERSE_BEARING_MAPPING = {
-  0.0   : 'N',
-  22.5  : 'NNW',
-  45.0  : 'NW',
-  67.5  : 'NWW',
-  90.0  : 'W',
-  112.5 : 'SWW',
-  135.0 : 'SW',
-  157.5 : 'SSW',
-  180.0 : 'S',
-  202.5 : 'SSE',
-  225.0 : 'SE',
-  247.5 : 'SEE',
-  270.0 : 'E',
-  292.5 : 'NEE',
-  315.0 : 'NE',
-  337.5 : 'NNE',
-  360.0 : 'N',
-}
+BEARING_MAJORS   = 'north east south west'.split()
+BEARING_MAJORS   *= 2 # no need for modulo later
+BEARING_QUARTER1 = 'N,N by E,N-NE,NE by N,NE,NE by E,E-NE,E by N'.split(',')
+BEARING_QUARTER2 = [p.replace('NE','EN') for p in quarter1]
 
 USER_AGENT = "django-spots 0.1"
 
@@ -210,19 +175,17 @@ def get_city_from_point(latitude, longitude):
   return get_city_from_google_results(google_results)
 
 
-def get_compass_direction_from_bearing(number, reverse=True):
-  from math import fabs
-  key = None
-  closest = 1000
-  for bearing in BEARING_MAPPING:
-    diff = fabs(bearing - number)
-    if diff <= closest:
-      key = bearing
-      closest = diff
-  if reverse:
-    return REVERSE_BEARING_MAPPING[key]
-  else:
-    return BEARING_MAPPING[key]
+def get_compass_direction_from_bearing(d):
+    d = (d % 360) + 360/64
+    majorindex, minor = divmod(d, 90.)
+    majorindex = int(majorindex)
+    minorindex  = int( (minor*4) // 45 )
+    p1, p2 = BEARING_MAJORS[majorindex: majorindex+2]
+    if p1 in {'north', 'south'}:
+        q = BEARING_QUARTER1
+    else:
+        q = BEARING_QUARTER2
+    return q[minorindex].replace('N', p1).replace('E', p2).capitalize()
   
 def get_neighborhood_from_urban_mapping(latitude, longitude, city=None):
   neighborhood = None
