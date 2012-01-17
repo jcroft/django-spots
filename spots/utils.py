@@ -182,9 +182,10 @@ def get_compass_direction_from_bearing(d):
     minorindex  = int( (minor*4) // 45 )
     p1, p2 = BEARING_MAJORS[majorindex: majorindex+2]
     if p1 in ['north', 'south']:
-        q = BEARING_QUARTER1
+      q = BEARING_QUARTER1
     else:
-        q = BEARING_QUARTER2
+      q = BEARING_QUARTER2
+    raise Exception(q[minorindex])
     return q[minorindex].replace('N', p1).replace('E', p2).capitalize()
   
 def get_neighborhood_from_urban_mapping(latitude, longitude, city=None):
