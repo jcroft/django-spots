@@ -12,7 +12,7 @@ from spots.models import *
 BEARING_MAJORS   = 'north east south west'.split()
 BEARING_MAJORS   *= 2 # no need for modulo later
 BEARING_QUARTER1 = 'N,N by E,N-NE,NE by N,NE,NE by E,E-NE,E by N'.split(',')
-BEARING_QUARTER2 = [p.replace('NE','EN') for p in quarter1]
+BEARING_QUARTER2 = [p.replace('NE','EN') for p in BEARING_QUARTER1]
 
 USER_AGENT = "django-spots 0.1"
 
