@@ -343,7 +343,9 @@ class Spot(models.Model):
       self.neighborhoods.clear()
       urban_mapping_api = UrbanMappingClient(method="getNeighborhoodsByLatLng")
       params = { 'apikey': settings.URBAN_MAPPING_API_KEY, 'lat': self.latitude, 'lng': self.longitude, 'results': 'many' }
-      try: 
+      try:
+        import time
+        time.sleep(2)
         neighborhoods = urban_mapping_api(**params)
         for neighborhood in neighborhoods.getiterator('neighborhood'):
           neighborhood_name = neighborhood.find('name').text.replace('  ', '').replace('\n', '').replace('\t', '')
