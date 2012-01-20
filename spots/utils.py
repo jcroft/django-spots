@@ -9,6 +9,10 @@ from geopy.geocoders.google import Google
 
 from spots.models import *
 
+
+
+
+USER_AGENT = "django-spots 0.1"
 BEARING_MAJORS   = 'north east south west'.split()
 BEARING_MAJORS   *= 2 # no need for modulo later
 BEARING_QUARTER1 = 'N,N by E,N-NE,NE by N,NE,NE by E,E-NE,E by N'.split(',')
@@ -48,7 +52,8 @@ BEARING_ABBR = {
   'North by west': 'NbW',
 }
 
-USER_AGENT = "django-spots 0.1"
+
+
 
 def fetch_and_parse_json(url, auth_info=None):
   """
@@ -58,11 +63,18 @@ def fetch_and_parse_json(url, auth_info=None):
   resource = fetch_resource(url, auth_info).read()
   return simplejson.loads(resource)
 
+
+
+
 def fetch_and_parse_xml(url, auth_info=None):
   """
   Fetch an XML document (possibly given auth info) and return an ElementTree.
   """
   return ET.parse(fetch_resource(url, auth_info))
+
+
+
+
 
 def fetch_resource(url, auth_info):
   """
@@ -78,6 +90,8 @@ def fetch_resource(url, auth_info):
   request = urllib2.Request(url)
   request.add_header("User-Agent", USER_AGENT)
   return opener.open(request)
+
+
 
 
 class GoogleMapsClient(object):
@@ -96,6 +110,8 @@ class GoogleMapsClient(object):
     return response
 
 
+
+
 class UrbanMappingClient(object):
   def __init__(self, method=''):
     self.method = method
@@ -112,6 +128,8 @@ class UrbanMappingClient(object):
     return response
             
 
+
+
 def get_location_from_address(address):
   """
   Geocodes this spot based on the address entered.
@@ -124,6 +142,8 @@ def get_location_from_address(address):
     return location_list[0]
   else:
     return ("", (None, None))
+
+
 
 
 def get_address_from_location(location):
@@ -142,12 +162,16 @@ def get_address_from_location(location):
   return place
   
 
+
+
 def get_street_address(address):
   """
   Returns a string of the street address, like "1525 NW 57th St".
   """
   try: return address.split(", ")[0]
   except: return ""
+
+
 
 
 def get_city_from_google_results(google_results):
@@ -189,6 +213,8 @@ def get_city_from_google_results(google_results):
   return city
   
 
+
+
 def get_city_from_address(address):
   """
   Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
@@ -199,6 +225,8 @@ def get_city_from_address(address):
   return get_city_from_google_results(google_results)
 
 
+
+
 def get_city_from_point(latitude, longitude):
   """
   Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
@@ -207,6 +235,8 @@ def get_city_from_point(latitude, longitude):
   params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': "%s,%s" % (latitude, longitude) }
   google_results          = google_maps_api(**params)
   return get_city_from_google_results(google_results)
+
+
 
 
 def get_compass_direction_from_bearing(d):
@@ -224,6 +254,8 @@ def get_compass_direction_from_bearing(d):
       'name': name,
       'abbr': BEARING_ABBR[name],
     }
+
+    
   
 def get_neighborhood_from_urban_mapping(latitude, longitude, city=None):
   neighborhood = None
