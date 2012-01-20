@@ -339,7 +339,7 @@ class Spot(models.Model):
     Gets the neighborhoods associated with this spot from Urban Mapping, creates
     them if necessary, and relates them to this spot.
     """
-    if hasattr(settings, 'URBAN_MAPPING_API_KEY'):
+    if hasattr(settings, 'URBAN_MAPPING_API_KEY') and not self.neighborhoods_checked:
       self.neighborhoods.clear()
       urban_mapping_api = UrbanMappingClient(method="getNeighborhoodsByLatLng")
       params = { 'apikey': settings.URBAN_MAPPING_API_KEY, 'lat': self.latitude, 'lng': self.longitude, 'results': 'many' }
