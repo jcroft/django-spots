@@ -357,6 +357,7 @@ class Spot(models.Model):
           self.neighborhoods.add(neighborhood)
         self.neighborhoods_checked = True
       except:
+        raise
         self.neighborhoods_checked = False
       if save:
         self.save()
