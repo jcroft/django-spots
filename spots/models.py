@@ -166,12 +166,12 @@ class Spot(models.Model):
   if you want to add additional attributes. For example, you may have a Restaurant model that subclasses Spot. Then,
   any Restaurant will have a "spot" attribute with all of these fields and methods.
   """
-  address             = models.CharField(blank=True, max_length=500)
-  city                = models.ForeignKey(City, blank=True, null=True, related_name="%(class)ss", editable=False)
-  neighborhoods       = models.ManyToManyField(Neighborhood, blank=True, null=True, related_name="%(class)ss", editable=False)
+  address               = models.CharField(blank=True, max_length=500)
+  city                  = models.ForeignKey(City, blank=True, null=True, related_name="%(class)ss", editable=False)
+  neighborhoods         = models.ManyToManyField(Neighborhood, blank=True, null=True, related_name="%(class)ss", editable=False)
   neighborhoods_checked = models.BooleanField(default=False)
-  latitude            = models.DecimalField(blank=True, null=True, max_digits=11, decimal_places=6, editable=False)
-  longitude           = models.DecimalField(blank=True, null=True, max_digits=11, decimal_places=6, editable=False)
+  latitude              = models.DecimalField(blank=True, null=True, max_digits=11, decimal_places=6, editable=False)
+  longitude             = models.DecimalField(blank=True, null=True, max_digits=11, decimal_places=6, editable=False)
 
   
   class Meta:
@@ -346,13 +346,13 @@ class Spot(models.Model):
       try: 
         neighborhoods = urban_mapping_api(**params)
         for neighborhood in neighborhoods.getiterator('neighborhood'):
-        neighborhood_name = neighborhood.find('name').text.replace('  ', '').replace('\n', '').replace('\t', '')
-        neighborhood, created = Neighborhood.objects.get_or_create(
-          name = neighborhood_name,
-          slug = slugify(neighborhood.find('name').text),
-          city = self.city,
-        )
-        self.neighborhoods.add(neighborhood)
+          neighborhood_name = neighborhood.find('name').text.replace('  ', '').replace('\n', '').replace('\t', '')
+          neighborhood, created = Neighborhood.objects.get_or_create(
+            name = neighborhood_name,
+            slug = slugify(neighborhood.find('name').text),
+            city = self.city,
+          )
+          self.neighborhoods.add(neighborhood)
         self.neighborhoods_checked = True
       except:
         self.neighborhoods_checked = False
