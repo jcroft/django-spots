@@ -239,15 +239,17 @@ def get_city_from_point(latitude, longitude):
 def get_city_from_address(address):
   from geopy import geocoders
   g = geocoders.GoogleV3()
-  place, (lat, lng) = g.geocode(address)
-  address, city, state_zip_code, country = place.split(',')
-  state, zip_code = state_zip_code.strip(' ')
-  print address
-  print city
-  print state
-  print zip_code
-  print country
-
+  try:
+    place, (lat, lng) = g.geocode(address)
+    address, city, state_zip_code, country = place.split(',')
+    state, zip_code = state_zip_code.strip(' ')
+    print address
+    print city
+    print state
+    print zip_code
+    print country
+  except:
+    print "Error geocoding. :("
 
 
 def get_compass_direction_from_bearing(d):
