@@ -302,34 +302,28 @@ class Spot(models.Model):
 
 
   def _get_address_from_location(self):
-    """
-    Reverse geocodes this spot based on the latitude and longitude entered.
-    Returns a string containing the full address, like "1525 NW 57th St, Seattle, WA 98107, USA".
-    """
-    return get_address_from_location(self.location())
+    return get_address_from_point(self.latitude, self.longitude)
 
   
   def _get_city_from_location(self):
     return get_city_from_point(self.latitude, self.longitude)
 
+  def _get_city_from_address(self):
+    return get_city_from_address(self.address)
+
 
   def _set_address(self, save=True):
-    if self.latitude and self.longitude:
-      if not self.address:
+    if self.latitude and self.longitude and not self.address:
         self.address = self._get_address_from_location()
-        if not self.address:
-          self.address = ''
     if save:
       self.save()
 
   
   def _set_city(self, save=True):
-    if self.latitude and self.longitude:
-      if not self.city:
+    if self.latitude and self.longitude and not self.city:
         self.city = self._get_city_from_location()
-    if not self.city and self.address:
-      from spots.utils import get_city_from_address
-      self.city = get_city_from_address(self.address)
+    if and self.address and not self.city:
+      self.city = self._get_city_from_address()
     if save:
       self.save()
 
