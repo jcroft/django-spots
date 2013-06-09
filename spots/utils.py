@@ -91,25 +91,6 @@ def fetch_resource(url, auth_info):
 
 
 
-
-class GoogleMapsClient(object):
-  def __init__(self, method=''):
-    self.method = method
-
-  def __getattr__(self, method):
-    return GoogleMapsClient('%s.%s' % (self.method, method))
-
-  def __repr__(self):
-    return "<GoogleMapsClient: %s>" % self.method
-
-  def __call__(self, **params):
-    url = "http://maps.google.com/maps/geo" + self.method + "?" + urlencode(params) + "&output=json"
-    response = fetch_and_parse_json(url)
-    return response
-
-
-
-
 class UrbanMappingClient(object):
   def __init__(self, method=''):
     self.method = method
@@ -142,119 +123,54 @@ def get_location_from_address(address):
     return ("", (None, None))
 
 
-
-
-def get_address_from_location(location):
-  """
-  Reverse geocodes this spot based on the location tuple entered.
-  Returns a string containing the full address, like "1525 NW 57th St, Seattle, WA 98107, USA".
-  Requires the reverse-ceocode branch of geopy.
-  """
-  latitude = location[0]
-  longitude = location[1]
-  try:
-    google_geocoder = Google(settings.GOOGLE_MAPS_API_KEY)
-    (place,point) = google_geocoder.reverse((latitude, longitude))
-  except:
-    return None
-  return place
-  
-
-
-
 def get_street_address(address):
   """
   Returns a string of the street address, like "1525 NW 57th St".
   """
   try: return address.split(", ")[0]
   except: return ""
+  
+def get_city_from_address(address):
+  import requests
+  sleep(.5)
+  url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % address
+  r = requests.get(url)
+  json = r.json()
+  street_address = city = state = country = ''
+  if json['status'] == 'OK':
+    results = json.get('results', None)
+    if results:
+      results = results[0]
+      if results.get('formatted_address', None):
+        street_address = results['formatted_address']
+      if results.get('address_components', None):
+        for c in results['address_components']:
+          if 'locality' in c['types']:
+            city = c['long_name']
+          elif 'administrative_area_level_1' in c['types']:
+            state = c['short_name']
+          elif 'country' in c['types']:
+            country = c['short_name'].lower()
 
-
-
-
-def get_city_from_google_results(google_results):
-  """
-  Gets or creates, and returns, a City object based on the city in the Google results from GeoPy.
-  This is fairly ugly, as Google's results aren't exactly the cleanest thing in the world.
-  """
-  from spots.models import City
-  city = None
-  print google_results
-  print google_results['Placemark'][0]
-  # Ugly parsing to get the city name from one of many different places it can be in Google's results.
-  try: city_name          = google_results['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName']
-  except:
-    try: city_name        = google_results['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['SubAdministrativeArea']['Locality']['LocalityName']
-    except:
-      try: city_name      = google_results['Placemark'][0]['AddressDetails']['Country']['Locality']['LocalityName']
-      except:
-        try: city_name    = google_results['Placemark'][0]['AddressDetails']['Country']['AddressLine']
-        except: city_name = None
-  # For some reason, the city name is sometimes the first item in a list.
-  if type(city_name) == list:
-    city_name = city_name[0]
-  try: state              = google_results['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['AdministrativeAreaName']
-  except: state           = ""
-  try: country_code       = google_results['Placemark'][0]['AddressDetails']['Country']['CountryNameCode'].lower()
-  except: country_code    = None
   # At this point, we should have all the attributes required to create and return a City object.
-  if city_name and country_code == "us":
+  city_obj = None
+  if city and country == "us":
     if state:
       try:
-        city, created = City.objects.get_or_create(city=city_name, state=state, country=country_code)
+        city_obj, created = City.objects.get_or_create(city=city_name, state=state, country=country_code)
       except:
         pass
-  elif city_name:
-    city, created = City.objects.get_or_create(city=city_name, province=state, country=country_code)
-  elif city_name and state != '':
-    city, created = City.objects.get_or_create(city=state, country=country_code)
-  else:
-    print "%s, %s, %s" % (city_name, state, country_code)
-  return city
-  
-
-
-
-def get_city_from_address(address):
-  """
-  Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
-  """
-  google_maps_api         = GoogleMapsClient()
-  params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
-  google_results          = google_maps_api(**params)
-  return get_city_from_google_results(google_results)
-
-
-
+  elif city:
+    city_obj, created = City.objects.get_or_create(city=city_name, province=state, country=country_code)
+  elif city and state != '':
+    city_obj, created = City.objects.get_or_create(city=state, country=country_code)
+  return (street_address, city, state, country, city_obj)
 
 def get_city_from_point(latitude, longitude):
-  """
-  Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
-  """
-  google_maps_api         = GoogleMapsClient()
-  params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': "%s,%s" % (latitude, longitude) }
-  google_results          = google_maps_api(**params)
-  return get_city_from_google_results(google_results)
+  return get_city_from_address('%s, %s' % latitude, longitude)
 
-def new_get_city_from_address(address):
-  from geopy import geocoders
-  g = geocoders.geocoders.GoogleV3()
-  try:
-    place, (lat, lng) = g.geocode(address)
-    address, city, state_zip_code, country = place.split(',')
-    state, zip_code = state_zip_code.strip(' ')
-    if country = "USA":
-      country = 'us'
-    else:
-      country = country.lower()
-    print address
-    print city
-    print state
-    print zip_code
-    print country
-  except Exception,e: 
-    print str(e)
-
+def get_address_from_location(location):
+  return get_city_from_address('%s, %s' % location[0], location[1])
 
 def get_compass_direction_from_bearing(d):
     d = (d % 360) + 360/64
