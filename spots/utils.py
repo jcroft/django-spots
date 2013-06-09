@@ -130,7 +130,8 @@ def get_street_address(address):
   try: return address.split(", ")[0]
   except: return ""
   
-def get_city_from_address(address):
+def geocode(address):
+  """ Returns a tuple of useful info. Input can be an address string or a string like "lat,lng"  """
   import requests
   sleep(.5)
   url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % address
@@ -166,11 +167,14 @@ def get_city_from_address(address):
     city_obj, created = City.objects.get_or_create(city=state, country=country_code)
   return (street_address, city, state, country, city_obj)
 
-def get_city_from_point(latitude, longitude):
-  return get_city_from_address('%s, %s' % latitude, longitude)
+def get_city_from_address(address):
+  return geocode(address)[4]
 
-def get_address_from_location(location):
-  return get_city_from_address('%s, %s' % location[0], location[1])
+def get_city_from_point(latitude, longitude):
+  return geocode('%s, %s' % (latitude, longitude))[4]
+
+def get_address_from_point(latitude, longitude):
+  return get_city_from_address('%s, %s' % (latitude, longitude))[0]
 
 def get_compass_direction_from_bearing(d):
     d = (d % 360) + 360/64
