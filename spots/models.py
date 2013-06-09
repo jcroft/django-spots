@@ -322,7 +322,7 @@ class Spot(models.Model):
   def _set_city(self, save=True):
     if self.latitude and self.longitude and not self.city:
         self.city = self._get_city_from_location()
-    if and self.address and not self.city:
+    if self.address and not self.city:
       self.city = self._get_city_from_address()
     if save:
       self.save()
