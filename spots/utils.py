@@ -132,6 +132,7 @@ def get_street_address(address):
   except: return ""
   
 def geocode(address):
+  from spots.models import City
   """ Returns a tuple of useful info. Input can be an address string or a string like "lat,lng"  """
   import requests
   time.sleep(.5)
