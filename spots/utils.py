@@ -1,5 +1,6 @@
 import urllib2
 import xml.etree.ElementTree as ET
+import time
 from urllib import urlencode
 from decimal import Decimal
 
@@ -133,7 +134,7 @@ def get_street_address(address):
 def geocode(address):
   """ Returns a tuple of useful info. Input can be an address string or a string like "lat,lng"  """
   import requests
-  sleep(.5)
+  time.sleep(.5)
   url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % address
   r = requests.get(url)
   json = r.json()
