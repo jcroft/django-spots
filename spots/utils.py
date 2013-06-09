@@ -209,7 +209,7 @@ def get_city_from_google_results(google_results):
   elif city_name and state != '':
     city, created = City.objects.get_or_create(city=state, country=country_code)
   else:
-    pass
+    print "%s, %s, %s" % (city_name, state, country_code)
   return city
   
 
