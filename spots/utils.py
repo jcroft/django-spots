@@ -248,8 +248,8 @@ def get_city_from_address(address):
     print state
     print zip_code
     print country
-  except:
-    print "Error geocoding. :("
+  except Exception,e: 
+    print str(e)
 
 
 def get_compass_direction_from_bearing(d):
