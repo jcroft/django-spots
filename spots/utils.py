@@ -239,7 +239,7 @@ def get_city_from_point(latitude, longitude):
 def get_city_from_address(address):
   from geopy import geocoders
   g = geocoders.GoogleV3()
-  place, (lat, lng) = gn.geocode(address)
+  place, (lat, lng) = g.geocode(address)
   address, city, state_zip_code, country = place.split(',')
   state, zip_code = state_zip_code.strip(' ')
   print address
