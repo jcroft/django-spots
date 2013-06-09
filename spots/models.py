@@ -297,7 +297,6 @@ class Spot(models.Model):
   def _get_address_from_location(self):
     return get_address_from_point(self.latitude, self.longitude)
 
-  
   def _get_city_from_location(self):
     return get_city_from_point(self.latitude, self.longitude)
 

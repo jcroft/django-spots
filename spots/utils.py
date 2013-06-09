@@ -176,7 +176,7 @@ def get_city_from_point(latitude, longitude):
   return geocode('%s, %s' % (latitude, longitude))[4]
 
 def get_address_from_point(latitude, longitude):
-  return get_city_from_address('%s, %s' % (latitude, longitude))[0]
+  return geocode('%s, %s' % (latitude, longitude))[0]
 
 def get_compass_direction_from_bearing(d):
     d = (d % 360) + 360/64
