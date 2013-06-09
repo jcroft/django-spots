@@ -215,14 +215,14 @@ def get_city_from_google_results(google_results):
 
 
 
-# def get_city_from_address(address):
-#   """
-#   Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
-#   """
-#   google_maps_api         = GoogleMapsClient()
-#   params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
-#   google_results          = google_maps_api(**params)
-#   return get_city_from_google_results(google_results)
+def get_city_from_address(address):
+  """
+  Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
+  """
+  google_maps_api         = GoogleMapsClient()
+  params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
+  google_results          = google_maps_api(**params)
+  return get_city_from_google_results(google_results)
 
 
 
@@ -236,14 +236,17 @@ def get_city_from_point(latitude, longitude):
   google_results          = google_maps_api(**params)
   return get_city_from_google_results(google_results)
 
-def get_city_from_address(address):
+def new_get_city_from_address(address):
   from geopy import geocoders
-  g = geocoders.GeocoderDotUS() 
+  g = geocoders.geocoders.GoogleV3()
   try:
     place, (lat, lng) = g.geocode(address)
-    address, city, state = place.split(',')
+    address, city, state_zip_code, country = place.split(',')
     state, zip_code = state_zip_code.strip(' ')
-    country = "us"
+    if country = "USA":
+      country = 'us'
+    else:
+      country = country.lower()
     print address
     print city
     print state
