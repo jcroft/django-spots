@@ -110,13 +110,6 @@ class City(models.Model):
       self.slug = slugify(self.city + " " + self.province + " " + self.country)
     else:
       self.slug = slugify(self.city + " " + self.state + " " + self.country)
-    if not self.latitude and not self.longitude:
-      place, (latitude, longitude) = get_location_from_address(self.full_name().encode('ascii', 'xmlcharrefreplace'))
-      if latitude and longitude:
-        self.latitude = str(latitude)
-        self.longitude = str(longitude)
-      else:
-        pass
     super(City, self).save(*args, **kwargs)
 
 
