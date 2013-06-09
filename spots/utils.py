@@ -160,13 +160,13 @@ def geocode(address):
   if city and country == "us":
     if state:
       try:
-        city_obj, created = City.objects.get_or_create(city=city, state=state, country=country_code)
+        city_obj, created = City.objects.get_or_create(city=city, state=state, country=country)
       except:
         pass
   elif city:
-    city_obj, created = City.objects.get_or_create(city=city, province=state, country=country_code)
+    city_obj, created = City.objects.get_or_create(city=city, province=state, country=country)
   elif city and state != '':
-    city_obj, created = City.objects.get_or_create(city=state, country=country_code)
+    city_obj, created = City.objects.get_or_create(city=state, country=country)
   return (street_address, city, state, country, city_obj)
 
 def get_city_from_address(address):
