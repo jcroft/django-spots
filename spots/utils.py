@@ -181,6 +181,8 @@ def get_city_from_google_results(google_results):
   """
   from spots.models import City
   city = None
+  print google_results
+  print google_results['Placemark'][0]
   # Ugly parsing to get the city name from one of many different places it can be in Google's results.
   try: city_name          = google_results['Placemark'][0]['AddressDetails']['Country']['AdministrativeArea']['Locality']['LocalityName']
   except:
