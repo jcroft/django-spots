@@ -5,8 +5,6 @@ from decimal import Decimal
 
 from django.conf import settings
 
-from geopy.geocoders.google import Google
-
 from spots.models import *
 
 
@@ -217,14 +215,14 @@ def get_city_from_google_results(google_results):
 
 
 
-def get_city_from_address(address):
-  """
-  Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
-  """
-  google_maps_api         = GoogleMapsClient()
-  params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
-  google_results          = google_maps_api(**params)
-  return get_city_from_google_results(google_results)
+# def get_city_from_address(address):
+#   """
+#   Uses Google Maps API to identity the precise city details, and creates and/or returns a City object.
+#   """
+#   google_maps_api         = GoogleMapsClient()
+#   params                  = {'key': settings.GOOGLE_MAPS_API_KEY, 'q': address, }
+#   google_results          = google_maps_api(**params)
+#   return get_city_from_google_results(google_results)
 
 
 
@@ -238,6 +236,17 @@ def get_city_from_point(latitude, longitude):
   google_results          = google_maps_api(**params)
   return get_city_from_google_results(google_results)
 
+def get_city_from_address(address):
+  from geopy import geocoders
+  g = geocoders.GoogleV3()
+  place, (lat, lng) = gn.geocode(address)
+  address, city, state_zip_code, country = place.split(',')
+  state, zip_code = state_zip_code.strip(' ')
+  print address
+  print city
+  print state
+  print zip_code
+  print country
 
 
 
